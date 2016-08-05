@@ -102,6 +102,10 @@ uint16_t UntouchedStack(void)
   #include "fontB.h"
 #endif
 
+#if defined RADIOLINK_TELEMETRY
+  #include <Wire.h>
+#endif // RADIOLINK_TELEMETRY
+
 char screen[480];      // Main screen ram for MAX7456
 char screenBuffer[20]; 
 uint32_t modeMSPRequests;
@@ -133,6 +137,11 @@ void setup()
   UCSR0A  |= (1<<U2X0); UBRR0H = h; UBRR0L = l; 
 //---
   Serial.flush();
+
+#if defined RADIOLINK_TELEMETRY
+  Wire.begin(4);
+  Wire.onRequest(onRequestRLTelemetry);
+#endif // RADIOLINK_TELEMETRY
 
   pinMode(PWMRSSIPIN, INPUT);
   pinMode(RSSIPIN, INPUT);
